@@ -598,3 +598,77 @@ html.no-scroll body {
 @keyframes dc-l-sway {
   0%, 100% { transform: rotate(0) scale(1); } 25% { transform: rotate(-7deg) scale(1.06); } 75% { transform: rotate(7deg) scale(1.06); }
 }
+
+/* ===== Easter egg do avatar ===== */
+.avatar-wrap {
+  transition: box-shadow .45s ease;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.avatar-wrap:hover { transform: none; }
+.avatar { -webkit-user-drag: none; }
+
+.avatar-wrap .rays {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 440px;
+  height: 440px;
+  margin: -220px 0 0 -220px;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .6s ease;
+  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.20) 0deg 7deg, transparent 7deg 28deg);
+  -webkit-mask-image: radial-gradient(circle, #000 14%, transparent 66%);
+          mask-image: radial-gradient(circle, #000 14%, transparent 66%);
+}
+.profile.egg .avatar-wrap .rays {
+  opacity: 1;
+  animation: rays-spin 8s linear infinite;
+}
+@keyframes rays-spin { to { transform: rotate(360deg); } }
+
+.profile.egg .avatar-wrap::after {
+  background: radial-gradient(circle, rgba(255,255,255,.36), transparent 68%);
+  animation: halo-egg 1.2s ease-in-out infinite;
+}
+@keyframes halo-egg {
+  0%, 100% { opacity: .6; transform: scale(.98); }
+  50% { opacity: 1; transform: scale(1.16); }
+}
+
+h1 { transition: text-shadow .6s ease; }
+.profile.egg h1 { text-shadow: 0 0 22px rgba(255,255,255,.45); }
+.divider span { transition: color .6s ease, text-shadow .6s ease; }
+.profile.egg + .divider span { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,.9); }
+
+.avatar-wrap .ping {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(255,255,255,.55);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+.avatar-wrap .ping.go { animation: av-ping .7s ease-out; }
+@keyframes av-ping {
+  0%   { opacity: .9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+.flash {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: #fff;
+  opacity: 0;
+}
+.flash.go { animation: egg-flash 2.6s steps(1) infinite; }
+@keyframes egg-flash {
+  0% { opacity: 0; } 1% { opacity: .16; } 3% { opacity: 0; } 5% { opacity: .1; } 7%, 100% { opacity: 0; }
+}
