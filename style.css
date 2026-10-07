@@ -660,15 +660,66 @@ h1 { transition: text-shadow .6s ease; }
   100% { opacity: 0; transform: scale(1.9); }
 }
 
-.flash {
-  position: fixed;
-  inset: 0;
-  z-index: 5;
+
+/* ===== Pombas brancas atravessando o céu atrás da luz (só no Easter egg) ===== */
+.profile { position: relative; }
+
+.doves {
+  position: absolute;
+  left: 50%;
+  top: -64px;
+  width: 100vw;
+  height: 250px;
+  margin-left: -50vw;
+  overflow: hidden;
+  z-index: -1;
   pointer-events: none;
-  background: #fff;
   opacity: 0;
+  transition: opacity .9s ease;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
 }
-.flash.go { animation: egg-flash 2.6s steps(1) infinite; }
-@keyframes egg-flash {
-  0% { opacity: 0; } 1% { opacity: .16; } 3% { opacity: 0; } 5% { opacity: .1; } 7%, 100% { opacity: 0; }
+.profile.egg .doves { opacity: 1; }
+
+.dove {
+  position: absolute;
+  left: 0;
+  animation: dove-fly 10s linear infinite;
+  animation-play-state: paused;
+}
+.dove.rev { animation-direction: reverse; }
+.dove.rev svg { transform: scaleX(-1); }
+
+.bob {
+  animation: dove-bob 2.4s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.dove svg {
+  display: block;
+  overflow: visible;
+  fill: #fff;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,.55));
+}
+.dove .wing {
+  transform-origin: 62px 46px;
+  animation: wing-flap .8s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.dove .wing.back { animation-delay: .08s; opacity: .75; }
+
+.profile.egg .dove,
+.profile.egg .bob,
+.profile.egg .dove .wing { animation-play-state: running; }
+
+@keyframes dove-fly {
+  from { transform: translateX(-25vw); }
+  to   { transform: translateX(110vw); }
+}
+@keyframes dove-bob {
+  from { transform: translateY(-6px); }
+  to   { transform: translateY(8px); }
+}
+@keyframes wing-flap {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(-.55); }
 }
