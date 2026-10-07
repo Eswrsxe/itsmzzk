@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="itsmzzk — In Christ Alone | Import Tips. TikTok, Instagram, planilha e Discord.">
+  <title>itsmzzk</title>
+
+  <!-- Ícone da aba -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Pré-visualização do link (Discord, WhatsApp, Telegram, redes sociais).
+       IMPORTANTE: depois de publicar, troque SEU-ENDERECO pelo endereço real do site
+       (ex.: https://itsmzzk.netlify.app), senão a imagem pode não aparecer no cartão. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="itsmzzk">
+  <meta property="og:title" content="itsmzzk">
+  <meta property="og:description" content="In Christ Alone ✝ | Import Tips — TikTok, Instagram, planilha e Discord.">
+  <meta property="og:image" content="https://SEU-ENDERECO/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="itsmzzk">
+  <meta name="twitter:description" content="In Christ Alone ✝ | Import Tips — TikTok, Instagram, planilha e Discord.">
+  <meta name="twitter:image" content="https://SEU-ENDERECO/assets/og-image.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <section class="profile" aria-label="Perfil">
+      <div class="avatar-wrap">
+        <img id="avatar" class="avatar" src="assets/avatar.jpeg" alt="Avatar de itsmzzk">
+      </div>
+
+      <h1>itsmzzk</h1>
+      <p class="bio">In Christ Alone <span aria-hidden="true"></span> | Import Tips</p>
+    </section>
+
+    <div class="divider" aria-hidden="true"><span>✝</span></div>
+
+    <nav class="links" aria-label="Links">
+      <a class="link-card" data-fx="tiktok" href="https://www.tiktok.com/@itsmzzk" target="_blank" rel="noopener noreferrer">
+        <img src="assets/tiktok.jpg" alt="" class="link-icon">
+        <span class="label">TikTok</span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="link-card" data-fx="instagram" href="https://www.instagram.com/mzllx2" target="_blank" rel="noopener noreferrer">
+        <img src="assets/instagram.jpg" alt="" class="link-icon">
+        <span class="label">Instagram</span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="link-card" data-fx="planilha" href="https://docs.google.com/spreadsheets/u/0/d/12QgSSes_D483PYHrQmKHHZdFPT21UX2umyCENoq9-TM/htmlview?pli=1" target="_blank" rel="noopener noreferrer">
+        <img src="assets/planilha.jpg" alt="" class="link-icon">
+        <span class="label">Planilha</span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="link-card" data-fx="discord" href="https://discord.com/invite/EhKxY9kNUf" target="_blank" rel="noopener noreferrer">
+        <img src="assets/discord.jpg" alt="" class="link-icon">
+        <span class="label">Discord</span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+    </nav>
+
+    <footer>
+      <span>© <span id="year"></span> itsmzzk</span>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Brilho + "expandidinha" fluidos que acompanham o dedo/mouse em qualquer lugar da tela
+    (function () {
+      var root = document.documentElement;
+      var page = document.querySelector(".page");
+      var cards = Array.prototype.slice.call(document.querySelectorAll(".link-card"));
+      var hasTouch = "ontouchstart" in window;
+      var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Cada botão ganha uma camada de brilho e guarda o próprio estado
+      var S = cards.map(function (c) {
+        var g = document.createElement("span");
+        g.className = "glow";
+        g.setAttribute("aria-hidden", "true");
+        c.insertBefore(g, c.firstChild);
+        return { lit: 0, x: 0, y: 0, glow: g, arrow: c.querySelector(".arrow"), dirty: false };
+      });
+
+      var ptr = { x: 0, y: 0, active: false, touch: false };
+      var startX = 0, startY = 0, moved = false, pressing = false, top = -1;
+      var raf = 0, last = 0;
+      var dwellIdx = -1, dwellT = 0, looping = -1, loopCls = "", held = false;
+
+      // Se a página cabe na tela, o dedo pode começar em qualquer lugar sem rolar
+      function fitScroll() {
+        if (page.offsetHeight <= window.innerHeight) root.classList.add("no-scroll");
+        else root.classList.remove("no-scroll");
+      }
+      fitScroll();
+      window.addEventListener("resize", fitScroll);
+      window.addEventListener("orientationchange", fitScroll);
+      window.addEventListener("load", fitScroll);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScroll);
+
+      function paint(c, s) {
+        var l = s.lit;
+        if (l <= 0) {
+          if (s.dirty) {
+            c.style.transform = ""; c.style.borderColor = ""; c.style.background = ""; c.style.boxShadow = "";
+            s.glow.style.opacity = "0";
+            if (s.arrow) { s.arrow.style.color = ""; s.arrow.style.transform = ""; }
+            s.dirty = false;
+          }
+          return;
+        }
+        s.dirty = true;
+        c.style.transform = "scale(" + (1 + l * 0.028).toFixed(4) + ")";
+        c.style.borderColor = "rgba(255,255,255," + (0.10 + l * 0.14).toFixed(3) + ")";
+        c.style.background = "linear-gradient(180deg, rgba(255,255,255," + (0.045 + l * 0.025).toFixed(3) +
+          "), rgba(255,255,255," + (0.035 + l * 0.03).toFixed(3) + "))";
+        c.style.boxShadow = "0 " + (9 + l * 6).toFixed(1) + "px " + (28 + l * 10).toFixed(1) +
+          "px rgba(0,0,0," + (0.24 + l * 0.14).toFixed(3) + ")";
+        s.glow.style.opacity = l.toFixed(3);
+        s.glow.style.background = "radial-gradient(circle 120px at " + s.x.toFixed(1) + "px " +
+          s.y.toFixed(1) + "px, rgba(255,255,255,0.11), transparent 70%)";
+        if (s.arrow) {
+          s.arrow.style.color = "rgba(255,255,255," + (0.44 + l * 0.5).toFixed(3) + ")";
+          s.arrow.style.transform = "translate(" + (l * 3).toFixed(2) + "px," + (-l * 3).toFixed(2) + "px)";
+        }
+      }
+
+      // Loop exclusivo de cada botão enquanto o dedo fica segurando nele
+      function startLoop(i) {
+        var c = cards[i], name = c.getAttribute("data-fx");
+        if (!name || reduce || c._fx) return;
+        loopCls = "loop-" + name; looping = i; held = true;
+        c.classList.add(loopCls);
+        if (navigator.vibrate) navigator.vibrate(6);
+      }
+      function stopLoop() {
+        if (looping >= 0) cards[looping].classList.remove(loopCls);
+        looping = -1; loopCls = "";
+      }
+
+      function frame(t) {
+        var dt = Math.min(48, t - (last || t));
+        last = t;
+        var k = reduce ? 1 : 1 - Math.exp(-dt / 90);   // suavidade da expansão/brilho
+        var kp = reduce ? 1 : 1 - Math.exp(-dt / 45);  // suavidade do brilho seguindo o dedo
+        var busy = ptr.active, best = -1;
+
+        cards.forEach(function (c, i) {
+          var r = c.getBoundingClientRect(), s = S[i], tg = 0;
+
+          if (ptr.active) {
+            var inX = ptr.x >= r.left && ptr.x <= r.right;
+            var dy = ptr.y < r.top ? r.top - ptr.y : (ptr.y > r.bottom ? ptr.y - r.bottom : 0);
+            if (inX && dy === 0) {
+              tg = 1; best = i;
+            } else {
+              var dx = inX ? 0 : Math.min(Math.abs(ptr.x - r.left), Math.abs(ptr.x - r.right));
+              tg = Math.max(0, 0.4 * (1 - Math.sqrt(dx * dx + dy * dy) / 44)); // vizinhos acendem de leve
+            }
+          }
+
+          var lx = ptr.x - r.left, ly = ptr.y - r.top;
+          if (s.lit < 0.02) { s.x = lx; s.y = ly; }
+          else { s.x += (lx - s.x) * kp; s.y += (ly - s.y) * kp; }
+
+          s.lit += (tg - s.lit) * k;
+          if (Math.abs(tg - s.lit) < 0.002) s.lit = tg;
+          if (s.lit > 0) busy = true;
+          paint(c, s);
+        });
+
+        // Vibração bem leve cada vez que o dedo entra num botão novo
+        if (ptr.active && best !== top) {
+          top = best;
+          if (best >= 0 && ptr.touch && navigator.vibrate) navigator.vibrate(8);
+        }
+
+        // Segurando o dedo no mesmo botão por um instante: começa o loop dele
+        if (pressing && best >= 0) {
+          if (best !== dwellIdx) { stopLoop(); dwellIdx = best; dwellT = t; }
+          else if (looping < 0 && t - dwellT > 380) startLoop(best);
+        } else {
+          stopLoop(); dwellIdx = -1;
+        }
+
+        if (busy) raf = requestAnimationFrame(frame);
+        else { raf = 0; last = 0; }
+      }
+
+      function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+      function down(x, y, touch) {
+        ptr.x = x; ptr.y = y; ptr.touch = touch; ptr.active = true;
+        pressing = true; moved = false; held = false; dwellIdx = -1; startX = x; startY = y; kick();
+      }
+      function move(x, y, touch) {
+        ptr.x = x; ptr.y = y; ptr.touch = touch; ptr.active = true;
+        if (pressing && Math.abs(x - startX) + Math.abs(y - startY) > 10) moved = true;
+        kick();
+      }
+      function release() { ptr.active = false; pressing = false; top = -1; stopLoop(); dwellIdx = -1; kick(); }
+
+      // Toque (celular): eventos de touch, que seguem o dedo em qualquer lugar da tela
+      window.addEventListener("touchstart", function (e) {
+        var t = e.touches[0]; if (t) down(t.clientX, t.clientY, true);
+      }, { passive: true });
+      window.addEventListener("touchmove", function (e) {
+        var t = e.touches[0]; if (t) move(t.clientX, t.clientY, true);
+      }, { passive: true });
+      window.addEventListener("touchend", release);
+      window.addEventListener("touchcancel", release);
+
+      // Mouse (computador)
+      window.addEventListener("pointerdown", function (e) {
+        if (e.pointerType === "touch" && hasTouch) return;
+        down(e.clientX, e.clientY, e.pointerType === "touch");
+      });
+      window.addEventListener("pointermove", function (e) {
+        if (e.pointerType === "touch" && hasTouch) return;
+        move(e.clientX, e.clientY, e.pointerType === "touch");
+      });
+      window.addEventListener("pointerup", function (e) {
+        if (e.pointerType === "touch" && hasTouch) return;
+        release();
+      });
+      root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") release(); });
+      window.addEventListener("blur", release);
+
+      // Se arrastou ou segurou o dedo (loop), não abre o link ao soltar
+      document.addEventListener("click", function (e) {
+        if (moved || held) { e.preventDefault(); e.stopPropagation(); moved = false; held = false; }
+      }, true);
+
+      // ===== Animação exclusiva de cada botão ao clicar =====
+      var FX = {
+        tiktok:    { v: [8, 30, 8, 30, 8] },
+        instagram: { v: [14] },
+        planilha:  { v: [6, 25, 6, 25, 6] },
+        discord:   { v: [10, 40, 16] }
+      };
+      var FX_TIME = 750; // ms de animação antes de abrir o link
+
+      cards.forEach(function (c) {
+        var o = document.createElement("span");
+        o.className = "fx";
+        o.setAttribute("aria-hidden", "true");
+        c.appendChild(o);
+
+        c.addEventListener("click", function (e) {
+          var name = c.getAttribute("data-fx"), cfg = FX[name];
+          if (!cfg || reduce) return;          // sem animação: abre direto
+          e.preventDefault();
+          if (c._fx) return;                   // já está animando
+          c._fx = true;
+          c.classList.add("fx-" + name);
+          if (navigator.vibrate) navigator.vibrate(cfg.v);
+
+          setTimeout(function () {
+            c.classList.remove("fx-" + name);
+            c._fx = false;
+            if (c.target === "_blank") {
+              var w = window.open(c.href, "_blank");
+              if (w) { try { w.opener = null; } catch (_) {} } else { location.href = c.href; }
+            } else {
+              location.href = c.href;
+            }
+          }, FX_TIME);
+        });
+      });
+
+      // Evita menu de segurar / arrastar atrapalhar
+      window.addEventListener("contextmenu", function (e) { if (ptr.touch) e.preventDefault(); });
+      window.addEventListener("dragstart", function (e) { e.preventDefault(); });
+    })();
+  </script>
+</body>
+</html>
