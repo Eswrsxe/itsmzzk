@@ -700,16 +700,18 @@ h1 { transition: text-shadow .6s ease; }
   fill: #fff;
   filter: drop-shadow(0 0 5px rgba(255,255,255,.55));
 }
-.dove .wing {
-  transform-origin: 62px 46px;
+.dove .wing path { stroke: rgba(0,0,0,.35); stroke-width: .8; stroke-linejoin: round; }
+.dove .wf {
+  transform-origin: 0 0;
   animation: wing-flap .8s ease-in-out infinite alternate;
   animation-play-state: paused;
 }
-.dove .wing.back { animation-delay: .08s; opacity: .75; }
+.dove .wing.back { opacity: .75; }
+.dove .wing.back .wf { animation-delay: .08s; }
 
 .profile.egg .dove,
 .profile.egg .bob,
-.profile.egg .dove .wing { animation-play-state: running; }
+.profile.egg .dove .wf { animation-play-state: running; }
 
 @keyframes dove-fly {
   from { transform: translateX(-25vw); }
