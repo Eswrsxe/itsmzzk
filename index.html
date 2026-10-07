@@ -30,12 +30,55 @@
 <body>
   <main class="page">
     <section class="profile" aria-label="Perfil">
+      <div class="doves" aria-hidden="true">
+      <div class="dove" style="top:18px;animation-duration:10s;animation-delay:-2s">
+        <div class="bob"><svg viewBox="0 -8 118 84" width="64" style="opacity:0.55" aria-hidden="true">
+          <g class="wing back"><path d="M60 46 C54 28 44 12 26 2 C44 4 64 12 76 28 C80 34 80 40 78 46 Z"/></g>
+          <path d="M38 46 L10 38 L16 47 L10 56 L40 52 Z"/>
+          <ellipse cx="62" cy="49" rx="27" ry="9.5"/>
+          <circle cx="90" cy="42" r="6.5"/>
+          <path d="M95.5 41.5 L104 44 L95.5 46 Z"/>
+          <g class="wing front"><path d="M64 47 C62 30 60 14 52 -2 C70 8 84 24 90 40 C91 44 88 47 84 48 Z"/></g>
+        </svg></div>
+      </div>
+      <div class="dove rev" style="top:86px;animation-duration:13s;animation-delay:-7s">
+        <div class="bob"><svg viewBox="0 -8 118 84" width="44" style="opacity:0.4" aria-hidden="true">
+          <g class="wing back"><path d="M60 46 C54 28 44 12 26 2 C44 4 64 12 76 28 C80 34 80 40 78 46 Z"/></g>
+          <path d="M38 46 L10 38 L16 47 L10 56 L40 52 Z"/>
+          <ellipse cx="62" cy="49" rx="27" ry="9.5"/>
+          <circle cx="90" cy="42" r="6.5"/>
+          <path d="M95.5 41.5 L104 44 L95.5 46 Z"/>
+          <g class="wing front"><path d="M64 47 C62 30 60 14 52 -2 C70 8 84 24 90 40 C91 44 88 47 84 48 Z"/></g>
+        </svg></div>
+      </div>
+      <div class="dove" style="top:140px;animation-duration:11.5s;animation-delay:-9s">
+        <div class="bob"><svg viewBox="0 -8 118 84" width="52" style="opacity:0.35" aria-hidden="true">
+          <g class="wing back"><path d="M60 46 C54 28 44 12 26 2 C44 4 64 12 76 28 C80 34 80 40 78 46 Z"/></g>
+          <path d="M38 46 L10 38 L16 47 L10 56 L40 52 Z"/>
+          <ellipse cx="62" cy="49" rx="27" ry="9.5"/>
+          <circle cx="90" cy="42" r="6.5"/>
+          <path d="M95.5 41.5 L104 44 L95.5 46 Z"/>
+          <g class="wing front"><path d="M64 47 C62 30 60 14 52 -2 C70 8 84 24 90 40 C91 44 88 47 84 48 Z"/></g>
+        </svg></div>
+      </div>
+      <div class="dove rev" style="top:52px;animation-duration:8.5s;animation-delay:-5s">
+        <div class="bob"><svg viewBox="0 -8 118 84" width="34" style="opacity:0.3" aria-hidden="true">
+          <g class="wing back"><path d="M60 46 C54 28 44 12 26 2 C44 4 64 12 76 28 C80 34 80 40 78 46 Z"/></g>
+          <path d="M38 46 L10 38 L16 47 L10 56 L40 52 Z"/>
+          <ellipse cx="62" cy="49" rx="27" ry="9.5"/>
+          <circle cx="90" cy="42" r="6.5"/>
+          <path d="M95.5 41.5 L104 44 L95.5 46 Z"/>
+          <g class="wing front"><path d="M64 47 C62 30 60 14 52 -2 C70 8 84 24 90 40 C91 44 88 47 84 48 Z"/></g>
+        </svg></div>
+      </div>
+      </div>
+
       <div class="avatar-wrap">
         <img id="avatar" class="avatar" src="assets/avatar.jpeg" alt="Avatar de itsmzzk">
       </div>
 
       <h1>itsmzzk</h1>
-      <p class="bio">In Christ Alone <span aria-hidden="true"></span> | Import Tips</p>
+      <p class="bio">In Christ Alone <span aria-hidden="true">✝</span> | Import Tips</p>
     </section>
 
     <div class="divider" aria-hidden="true"><span>✝</span></div>
@@ -152,21 +195,18 @@
       var profile = document.querySelector(".profile");
       var rays = document.createElement("span"); rays.className = "rays"; rays.setAttribute("aria-hidden", "true");
       var ping = document.createElement("span"); ping.className = "ping"; ping.setAttribute("aria-hidden", "true");
-      var flash = document.createElement("span"); flash.className = "flash"; flash.setAttribute("aria-hidden", "true");
-      wrap.appendChild(rays); wrap.appendChild(ping); document.body.appendChild(flash);
+      wrap.appendChild(rays); wrap.appendChild(ping);
       var av = { lit: 0, rx: 0, ry: 0, over: false, dwellT: -1, egg: false };
 
       function startEgg() {
         av.egg = true;
         profile.classList.add("egg");
-        flash.classList.remove("go"); void flash.offsetWidth; flash.classList.add("go");
         if (navigator.vibrate) navigator.vibrate([14, 70, 14]);
       }
       function stopEgg() {
         if (!av.egg) return;
         av.egg = false;
         profile.classList.remove("egg");
-        flash.classList.remove("go");
       }
       function updateAvatar(t, k) {
         var r = wrap.getBoundingClientRect();
